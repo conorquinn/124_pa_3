@@ -12,10 +12,18 @@ def gen_rand_sol(l):
 		sol.append(random.randint(0, l))
 	return sol
 
+# Generate a random list A for testing
+def rand_lst():
+  lst = []
+  for i in range(0,n):
+    lst.append(random.randint(0, largest))
+  return lst
+  
+
 def _A(sol):
 	_a = [0] * len(sol)
 	for i in range(0,len(sol)):
-		_a[sol[i]] = _a[sol[i]] + sol[i]
+		_a[sol[i]] += sol[i]
 	return _a
 
 def rand_neighbor(S):
@@ -56,9 +64,14 @@ def repeated_random():
  # Hill Climbing 
 def hill_climbing():
   A = rand_lst()
-  S = kkarp(_A(gen_rand_sol(n)))
+  r1 = gen_rand_sol(n)
+  S = kkarp(_A(r1))
   for i in range(0, max_iter):
-    _S = rand_neighbor(S)
+    r2 = rand_neighbor(r1)
+    _S = kkarp(_A(r2))
     if (residue(_S, A) < residue(S, A)):
       S = _S
+      r1 = r2
   return S
+
+print hill_climbing()
