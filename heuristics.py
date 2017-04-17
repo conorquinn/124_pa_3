@@ -98,6 +98,7 @@ def simulated_annealing():
       S = _S
     else:
       diff = -1 *(residue(_S,A) - residue (S,A))
+      print diff
       if diff > 0:
         n = math.exp(diff/T(i))
         p = random.uniform(0,1)
