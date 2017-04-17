@@ -6,9 +6,17 @@ max_iter = 25000
 n = 100
 largest = 10 ** 12
 
+def residue(S, A):
+	l = len(S)
+	_a = [0] * l
+	for i in range(l):
+		_a[S[i]-1] += A[i]
+	sol = kkarp(_a)
+	return sol
+
 def gen_rand_sol(l):
 	sol = []
-	for i in range(0,l):
+	for i in range(l):
 		sol.append(random.randint(0, l))
 	return sol
 
@@ -20,21 +28,16 @@ def rand_lst():
   return lst
   
 
-def _A(sol):
-	_a = [0] * len(sol)
-	for i in range(0,len(sol)):
-		_a[sol[i]] += sol[i]
-	return _a
-
 def rand_neighbor(S):
+	_S = S[:]
 	lim = len(S)
 	while(1):
-		i = random.randint(1, lim)
-		j = random.randint(1, lim)
-		if (S[i] != j):
-			S[i] = j
+		i = random.randint(1, lim) - 1
+		j = random.randint(1, lim) 
+		if (_S[i] != j):
+			_S[i] = j
 			break
-	return S
+	return _S
 
 
 def kkarp(A):
@@ -59,7 +62,7 @@ def repeated_random():
     _S = kkarp(_A(gen_rand_sol(n)))
     if (residue(_S, A) < residue(S, A)):
       S = _S
-  return S
+  return residue(S, A)
 
  # Hill Climbing 
 def hill_climbing():
@@ -72,6 +75,27 @@ def hill_climbing():
     if (residue(_S, A) < residue(S, A)):
       S = _S
       r1 = r2
-  return S
+  return residue(S, A)
 
-print hill_climbing()
+tenten = 10 ** 10
+def T(iter):
+  return float(tenten)*0.8**(math.floor(float(iter)/300.))
+
+# Simulated Annealing
+def simulated_annealing(A):
+  S = gen_rand_sol(n)
+  best = S
+  for i in range(0, max_iter):
+	_S = rand_neighbor(S)
+	if residue(_S, A) < residue(S, A):
+		S = _S
+	else:
+		r = -1 * (residue(_S, A)-residue(S, A))
+		p = math.exp(r/T(i))
+    	if p >= random.uniform(0,1):
+			S = _S
+	if residue(S, A) < residue(best, A):
+		best = S
+  return residue(best, A) 
+
+print simulated_annealing()

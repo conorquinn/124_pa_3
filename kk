@@ -1,3 +1,2 @@
 #!/bin/bash
-
-python heuristics.py
+python kk.py $1
