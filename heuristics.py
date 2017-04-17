@@ -33,16 +33,8 @@ def gen_rand_sol():
   return rand_lst
 
 # Returns the residue of a partion solution S for an array A
-def residue(S, A):
-  sum1 = 0
-  sum2 = 0
-  for i in range(0, len(A)):
-    if (S[i] == 1):
-      sum1 += A[i]
-    else:
-      sum2 += A[i]
-      
-  return abs(sum1 - sum2)
+def residue(sol, A):      
+  return abs(sum([a * s for a,s in zip (A, sol)]))
   
 # Generate a random list A for testing
 def rand_lst():
@@ -60,19 +52,25 @@ def repeated_random():
     if (residue(_S, A) < residue(S, A)):
       S = _S
   return S
-  
+
+def diff(A,B):
+  for i in range(0, len(A)):
+    if (A[i] != B[i]):
+      print "diff"
+
 # Generates a random neighbor of S 
 def rand_neighbor(S):
+  _S = S[:]
   i = 0
   j = 0
   while (i == j):
       i = random.randint(0, 99)
       j = random.randint(0, 99)
   pr_swap = random.randint(0,1)
-  S[i] = S[i] * -1
+  _S[i] = -_S[i]
   if pr_swap == 1:
-    S[j] = S[j] * -1
-  return S
+    _S[j] = -_S[j]
+  return _S
   
 # Hill Climbing 
 def hill_climbing():
@@ -84,29 +82,31 @@ def hill_climbing():
       S = _S
   return S
 
-def T(i):
-  return tenten*0.8*(math.floor(i/300))
+tenten = 10 ** 10
+def T(iter):
+  return float(tenten)*0.8**(math.floor(float(iter)/300.))
 
 # Simulated Annealing
 def simulated_annealing():
   A = rand_lst()
   S = gen_rand_sol()
+  b = S
   best = S
   for i in range(0, max_iter):
     _S = rand_neighbor(S)
-    if residue(_S, A) < residue(S, A):
+    r1 = residue(S, A)
+    r2 = residue(_S, A)
+    if r2 < r1:
       S = _S
     else:
-      diff = -1 *(residue(_S,A) - residue (S,A))
-      print diff
-      if diff > 0:
-        n = math.exp(diff/T(i))
-        p = random.uniform(0,1)
-        if n >= p:
-          S = _S
+      r = -1 * (r2-r1)
+      n = math.exp(r/T(i))
+      if n >= random.uniform(0,1):
+        S = _S
     if residue(S, A) < residue(best, A):
       best = S
   return best 
 
-print simulated_annealing()
+
+
 
