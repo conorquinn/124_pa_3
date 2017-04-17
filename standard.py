@@ -24,12 +24,7 @@ def kkarp(A):
     
 # Generate a random solution
 def gen_rand_sol():
-  rand_lst = []
-  for i in range (0, n):
-    sign = random.randint(0,1)
-    if sign == 0: 
-      sign -= 1
-    rand_lst.append(sign)
+  rand_lst = [random.choice([-1, 1] for i in range(n))]
   return rand_lst
 
 # Returns the residue of a partion solution S for an array A
@@ -44,14 +39,13 @@ def rand_lst():
   return lst
   
 # Repeated random
-def repeated_random():
-  A = rand_lst()
+def repeated_random(A):
   S = gen_rand_sol()
   for i in range(0, max_iter):
     _S = gen_rand_sol()
     if (residue(_S, A) < residue(S, A)):
       S = _S
-  return S
+  return residue(S,A)
 
 def diff(A,B):
   for i in range(0, len(A)):
@@ -73,24 +67,21 @@ def rand_neighbor(S):
   return _S
   
 # Hill Climbing 
-def hill_climbing():
-  A = rand_lst()
+def hill_climbing(A):
   S = gen_rand_sol()
   for i in range(0, max_iter):
     _S = rand_neighbor(S)
     if (residue(_S, A) < residue(S, A)):
       S = _S
-  return S
+  return residue(S,A)
 
 tenten = 10 ** 10
 def T(iter):
   return float(tenten)*0.8**(math.floor(float(iter)/300.))
 
 # Simulated Annealing
-def simulated_annealing():
-  A = rand_lst()
+def simulated_annealing(A):
   S = gen_rand_sol()
-  b = S
   best = S
   for i in range(0, max_iter):
     _S = rand_neighbor(S)
@@ -105,7 +96,7 @@ def simulated_annealing():
         S = _S
     if residue(S, A) < residue(best, A):
       best = S
-  return best 
+  return residue(best, A) 
 
 
 
